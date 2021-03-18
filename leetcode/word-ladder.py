@@ -6,47 +6,53 @@ class Solution:
     def ladderLength(self, beginWord: str, endWord: str, wordList):
         if endWord not in wordList:
             return 0
-        wordList = [beginWord] + list(set(wordList) - set([beginWord]))
-        
+        wordList = [beginWord] + sorted(list(set(wordList) - set([beginWord])))
         n = len(wordList)
+
         graph = self.to_graph(wordList)
-        dist =[0] + [math.inf for _ in range(n-1)]
+        dist = [0] + [math.inf for _ in range(n-1)]
         prev = [None for _ in range(n)]
         bfs_queue, visited = [0], set([0])
         while len(bfs_queue) > 0:
-            next_cursor = bfs_queue.pop(0)
-            for neighbor, is_visited in enumerate(graph[next_cursor]):
-                if is_visited:
+            cursor = bfs_queue.pop(0)
+            for neighbor, is_connected in enumerate(graph[cursor]):
+                alt = dist[cursor] + 1
+                if is_connected:
+                    if alt < dist[neighbor]:
+                        dist[neighbor] = alt
+                        prev[neighbor] = cursor
                     if neighbor not in visited:
                         bfs_queue.append(neighbor)
                         visited.add(neighbor)
-                    alt = dist[next_cursor] + 1
-                    if alt < dist[neighbor]:
-                        dist[neighbor] = alt
-                        prev[neighbor] = next_cursor
-            
-            # print(bfs_queue, dist, prev)
-            
         return dist[wordList.index(endWord)] + 1 if dist[wordList.index(endWord)] != math.inf else 0
 
     def to_graph(self, wordlist):
         n = len(wordlist)
         graph = \
             [
-                [0 for i in range(n)]
+                [1 for i in range(n)]
                 for j in range(n)
             ]
         for i in range(n):
             for j in range(n):
-                if len(wordlist[i]) - len(list(set(wordlist[i]) & set(wordlist[j]))) == 1:
-                    graph[i][j]= 1
-        # print(*graph, sep="\n")
+                diff_count = 0
+                for a, b in zip(wordlist[i], wordlist[j]):
+                    if a != b:
+                        diff_count += 1
+                    if diff_count > 1:
+                        graph[i][j] = 0
         return graph
 
-print(Solution().ladderLength(
+
+assert Solution().ladderLength(
+    "leet",
+    "code",
+    wordList=["lest", "leet", "lose", "code", "lode", "robe", "lost"]
+) == 6
+assert Solution().ladderLength(
     "a", "c",
-    wordList=["a","b","c"]
-))
+    wordList=["a", "b", "c"]
+) == 2
 print(
     Solution().ladderLength(
         "hit", "cog",
@@ -55,9 +61,9 @@ print(
 )
 print(
     Solution().ladderLength(
-        "hot", "dog", wordList=["hot","dog"])
+        "hot", "dog", wordList=["hot", "dog"])
 )
 print(
     Solution().ladderLength("hit", "cog",
-        wordList=["hot","cog","dot","dog","hit","lot","log"])
+                            wordList=["hot", "cog", "dot", "dog", "hit", "lot", "log"])
 )
