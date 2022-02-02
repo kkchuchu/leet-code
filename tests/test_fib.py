@@ -26,3 +26,15 @@ class TestFibDP(unittest.TestCase):
         
     def test_tribonacci_case3(self):
         self.assertEquals(1389537, Sol().tribonacci(25))
+        
+    def test_climb_case1(self):
+        self.assertEquals(2, Sol().climbStairs(2))
+        
+    def test_climb_case2(self):
+        self.assertEquals(3, Sol().climbStairs(3))
+        
+    def test_minCostClimbingStairs_case1(self):
+        self.assertEquals(15, Sol().minCostClimbingStairs([10, 15, 20]))
+        
+    def test_minCostClimbingStairs_case2(self):
+        self.assertEquals(6, Sol().minCostClimbingStairs([1,100,1,1,1,100,1,1,100,1]))
