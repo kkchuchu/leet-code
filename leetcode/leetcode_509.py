@@ -1,3 +1,5 @@
+from typing import List
+
 
 class Solution:
 
@@ -36,3 +38,13 @@ class Solution:
         for i in range(2, len(a_i)):
             a_i[i] = min(a_i[i-1] + cost[i-1], a_i[i-2] + cost[i-2])
         return a_i[-1]
+    
+    def rob(self, nums: List[int]) -> int:
+        if len(nums) <= 2:
+            return max(nums)
+        a = [nums[i] for i in range(len(nums))]
+        a[1] = max(a[0], a[1])
+        for i in range(2, len(nums)):
+            a[i] = max(a[i-2] + a[i], a[i-1])
+        
+        return a[-1]
